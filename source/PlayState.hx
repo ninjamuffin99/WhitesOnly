@@ -26,6 +26,9 @@ class PlayState extends FlxState
 		_player = new Player(20, 300, playerBullets);
 		add(_player);
 		
+		_enemy = new Enemy(400, 300);
+		add(_enemy);
+		
 		
 		
 		var barHeight:Float = 50;
@@ -47,7 +50,26 @@ class PlayState extends FlxState
 		{
 			var flash:MuzzleFlash = new MuzzleFlash(_player.xPos, _player.y + 26);
 			add(flash);
+			
+			FlxG.camera.shake(0.01, 0.1);
 		}
 		
+		playerBullets.forEachAlive(collisionCheck);
+		
+		
 	}
+	
+	private function collisionCheck(b:Bullet):Void
+	{
+		if (FlxG.overlap(b, _enemy))
+		{
+			_enemy.hit();
+			_enemy.x += b.velocity.x * FlxG.random.float(0.001, 0.01);
+			var flash:MuzzleFlash = new MuzzleFlash(b.x, b.y);
+			add(flash);
+			
+			b.kill();
+		}
+	}
+	
 }
