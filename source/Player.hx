@@ -53,12 +53,15 @@ class Player extends FlxSprite
 			var accel:Float = 3000;
 			if (_left)
 			{
-				FlxG.log.add("press left");
 				acceleration.x = -accel;
+				
+				facing = FlxObject.LEFT;
 			}
 			if (_right)
 			{
 				acceleration.x = accel;
+				
+				facing = FlxObject.RIGHT;
 			}
 		}
 		
@@ -71,7 +74,19 @@ class Player extends FlxSprite
 	
 	private function attack():Void
 	{
-		var newBullet = new Bullet(x + 64, y + 32, 500, FlxObject.RIGHT, 10);
+		var xPos:Float = 0;
+		switch (facing) 
+		{
+			case FlxObject.RIGHT:
+				xPos = x + 64;
+			case FlxObject.LEFT:
+				xPos = x - 32;
+			default:
+				throw("OOPSIE WOOPSIE!! Uwu We madea fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!");
+		}
+		
+		var newBullet = new Bullet(x + 64, y + 32, 800, facing, 10);
+		bulletArray.add(newBullet);
 	}
 	
 }

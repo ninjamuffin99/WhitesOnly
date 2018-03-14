@@ -35,7 +35,7 @@ class Bullet extends FlxSprite
 		
 		if (dir == FlxObject.LEFT)
 		{
-			velocity.x = speed;
+			velocity.x = -speed;
 		}
 		if (dir == FlxObject.RIGHT)
 		{
