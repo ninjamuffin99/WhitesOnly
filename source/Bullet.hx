@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 
 /**
@@ -26,7 +27,7 @@ class Bullet extends FlxSprite
 		dir = Direction;
 		damage = Damage;
 		
-		velocity.y = FlxG.random.float( -20, 20);
+		velocity.y = FlxG.random.float( -25, 25);
 	}
 	
 	override public function update(elapsed:Float):Void 

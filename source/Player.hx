@@ -14,6 +14,10 @@ class Player extends FlxSprite
 {
 	
 	private var bulletArray:FlxTypedGroup<Bullet>;
+	public var justShot:Bool = false;
+	private var rateOfFire:Int = 6;
+	private var fireCoutner:Int = 0;
+	public var xPos:Float = 0;
 
 	public function new(?X:Float=0, ?Y:Float=0, playerBulletArray:FlxTypedGroup<Bullet>) 
 	{
@@ -65,28 +69,39 @@ class Player extends FlxSprite
 			}
 		}
 		
+		
+		justShot = false;
 		if (FlxG.keys.pressed.SPACE)
 		{
-			attack();
+			fireCoutner += 1;
+			if (fireCoutner >= rateOfFire)
+			{
+				fireCoutner = 0;
+				attack();
+				justShot = true;
+			}
 		}
 		
 	}
 	
+	
+	
 	private function attack():Void
 	{
-		var xPos:Float = 0;
+		
 		switch (facing) 
 		{
 			case FlxObject.RIGHT:
-				xPos = x + 64;
+				xPos = x + 54;
 			case FlxObject.LEFT:
-				xPos = x - 32;
+				xPos = x - 22;
 			default:
 				throw("OOPSIE WOOPSIE!! Uwu We madea fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!");
 		}
 		
-		var newBullet = new Bullet(x + 64, y + 32, 800, facing, 10);
+		var newBullet = new Bullet(xPos, y + 32, 800, facing, 10);
 		bulletArray.add(newBullet);
+		
 	}
 	
 }

@@ -12,6 +12,7 @@ import flixel.util.FlxColor;
 class PlayState extends FlxState
 {
 	private var _player:Player;
+	private var _enemy:Enemy;
 	
 	private var playerBullets:FlxTypedGroup<Bullet>;
 	
@@ -24,6 +25,8 @@ class PlayState extends FlxState
 		
 		_player = new Player(20, 300, playerBullets);
 		add(_player);
+		
+		
 		
 		var barHeight:Float = 50;
 		
@@ -39,5 +42,12 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		
+		if (_player.justShot)
+		{
+			var flash:MuzzleFlash = new MuzzleFlash(_player.xPos, _player.y + 26);
+			add(flash);
+		}
+		
 	}
 }
