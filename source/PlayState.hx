@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -38,6 +39,10 @@ class PlayState extends FlxState
 		var cinemaBar2:FlxSprite = new FlxSprite(0, FlxG.height - barHeight).makeGraphic(FlxG.width, Std.int(barHeight), FlxColor.BLACK);
 		add(cinemaBar2);
 		
+		cinemaBar.scrollFactor.x = cinemaBar.scrollFactor.y = 0;
+		cinemaBar2.scrollFactor.x = cinemaBar2.scrollFactor.y = 0;
+		
+		FlxG.camera.follow(_player, FlxCameraFollowStyle.SCREEN_BY_SCREEN, 0.25);
 		
 		super.create();
 	}

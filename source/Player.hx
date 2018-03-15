@@ -18,6 +18,8 @@ class Player extends FlxSprite
 	private var rateOfFire:Int = 6;
 	private var fireCoutner:Int = 0;
 	public var xPos:Float = 0;
+	
+	private var knockBack:Float = 3;
 
 	public function new(?X:Float=0, ?Y:Float=0, playerBulletArray:FlxTypedGroup<Bullet>) 
 	{
@@ -93,8 +95,10 @@ class Player extends FlxSprite
 		{
 			case FlxObject.RIGHT:
 				xPos = x + 54;
+				x -= knockBack;
 			case FlxObject.LEFT:
 				xPos = x - 22;
+				x += knockBack;
 			default:
 				throw("OOPSIE WOOPSIE!! Uwu We madea fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!");
 		}
