@@ -12,10 +12,10 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
  */
 class Bullet extends FlxSprite 
 {
-
-	private var speed:Float;
-	private var dir:Int;
-	private var damage:Float;
+	private var life:Float = 3;
+	public var speed:Float;
+	public var dir:Int;
+	public var damage:Float;
 	
 	public function new(?X:Float=0, ?Y:Float=0, Speed:Float, Direction:Int, Damage:Float) 
 	{
@@ -41,6 +41,12 @@ class Bullet extends FlxSprite
 		if (dir == FlxObject.RIGHT)
 		{
 			velocity.x = speed;
+		}
+		
+		life -= FlxG.elapsed;
+		if (life < 0)
+		{
+			kill();
 		}
 		
 	}

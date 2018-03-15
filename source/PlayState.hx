@@ -2,10 +2,13 @@ package;
 
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
@@ -13,23 +16,35 @@ import flixel.util.FlxColor;
 class PlayState extends FlxState
 {
 	private var _player:Player;
+	private var playerBullets:FlxTypedGroup<Bullet>;
+	
 	private var _enemy:Enemy;
 	
-	private var playerBullets:FlxTypedGroup<Bullet>;
+	private var _map:FlxOgmoLoader;
+	private var _mWalls:FlxTilemap;
+	
+	private var _grpPeople:FlxTypedGroup<FlxSprite>;
 	
 	override public function create():Void
 	{
 		FlxG.camera.bgColor = FlxColor.GRAY;
 		
+		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
+		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 32, 32, "Floors");
+		_mWalls.setTileProperties(1, FlxObject.ANY);
+		add(_mWalls);
+		
+		_grpPeople = new FlxTypedGroup<FlxSprite>();
+		add(_grpPeople);
+		
 		playerBullets = new FlxTypedGroup<Bullet>();
 		add(playerBullets);
 		
 		_player = new Player(20, 300, playerBullets);
-		add(_player);
+		_grpPeople.add(_player);
 		
 		_enemy = new Enemy(400, 300);
-		add(_enemy);
-		
+		_grpPeople.add(_enemy);
 		
 		
 		var barHeight:Float = 50;
@@ -44,7 +59,14 @@ class PlayState extends FlxState
 		
 		FlxG.camera.follow(_player, FlxCameraFollowStyle.SCREEN_BY_SCREEN, 0.25);
 		
+		_grpPeople.forEach(initPeople);
+		
 		super.create();
+	}
+	
+	private function initPeople(p:FlxSprite):Void
+	{
+		p.acceleration.y = 600;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -61,12 +83,12 @@ class PlayState extends FlxState
 		
 		playerBullets.forEachAlive(collisionCheck);
 		
-		
+		FlxG.collide(_grpPeople, _mWalls);
 	}
 	
 	private function collisionCheck(b:Bullet):Void
 	{
-		if (FlxG.overlap(b, _enemy))
+		if (FlxG.overlap(b, _enemy) && _enemy.color != FlxColor.WHITE)
 		{
 			_enemy.hit();
 			_enemy.x += b.velocity.x * FlxG.random.float(0.001, 0.01);

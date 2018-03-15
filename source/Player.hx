@@ -20,6 +20,9 @@ class Player extends FlxSprite
 	public var xPos:Float = 0;
 	
 	private var knockBack:Float = 3;
+	
+	private var accel:Float = 3000;
+	
 
 	public function new(?X:Float=0, ?Y:Float=0, playerBulletArray:FlxTypedGroup<Bullet>) 
 	{
@@ -30,7 +33,6 @@ class Player extends FlxSprite
 		drag.x = 1400;
 		
 		bulletArray = playerBulletArray;
-		
 	}
 	
 	override public function update(elapsed:Float):Void 
@@ -46,17 +48,36 @@ class Player extends FlxSprite
 	{
 		var _left:Bool = FlxG.keys.anyPressed([A, LEFT]);
 		var _right:Bool = FlxG.keys.anyPressed([D, RIGHT]);
+		var _upP:Bool = FlxG.keys.anyJustPressed([W, UP]);
+		
+		var _shift:Bool = FlxG.keys.anyPressed([SHIFT, X]);
+		
+		var canJump:Bool = isTouching(FlxObject.FLOOR);
+		
+		if (_shift)
+		{
+			maxVelocity.x = 450;
+		}
+		else
+		{
+			maxVelocity.x = 300;
+		}
 		
 		if (_left && _right)
 		{
 			_left = _right = false;
 		}
 		
+		if (_upP && canJump)
+		{
+			velocity.y -= 300;
+		}
+		
 		acceleration.x = 0;
 		
 		if (_left || _right)
 		{
-			var accel:Float = 3000;
+			
 			if (_left)
 			{
 				acceleration.x = -accel;
@@ -103,7 +124,7 @@ class Player extends FlxSprite
 				throw("OOPSIE WOOPSIE!! Uwu We madea fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!");
 		}
 		
-		var newBullet = new Bullet(xPos, y + 32, 800, facing, 10);
+		var newBullet = new Bullet(xPos, y + 32, 1600, facing, 10);
 		bulletArray.add(newBullet);
 		
 	}
