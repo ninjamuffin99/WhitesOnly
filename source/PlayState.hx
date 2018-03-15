@@ -9,6 +9,8 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
@@ -19,6 +21,7 @@ class PlayState extends FlxState
 	private var playerBullets:FlxTypedGroup<Bullet>;
 	
 	private var _enemy:Enemy;
+	private var _enemyThoughts:FlxTypedGroup<Thoughts>;
 	
 	private var _map:FlxOgmoLoader;
 	private var _mWalls:FlxTilemap;
@@ -39,6 +42,9 @@ class PlayState extends FlxState
 		
 		playerBullets = new FlxTypedGroup<Bullet>();
 		add(playerBullets);
+		
+		_enemyThoughts = new FlxTypedGroup<Thoughts>();
+		add(_enemyThoughts);
 		
 		_player = new Player(20, 300, playerBullets);
 		_grpPeople.add(_player);
@@ -84,7 +90,23 @@ class PlayState extends FlxState
 		playerBullets.forEachAlive(collisionCheck);
 		
 		FlxG.collide(_grpPeople, _mWalls);
+		
+		if (FlxMath.distanceBetween(_player, _enemy) < 94 && !_enemy.justThought)
+		{
+			enemyThink();
+		}
 	}
+	
+	private function enemyThink():Void
+	{
+		_enemy.justThought = true;
+		var thought:Thoughts = new Thoughts(_enemy.x, _enemy.y - 68, 100, "This is my thought", 16);
+		add(thought);
+		
+		FlxTween.tween(thought, {y: thought.y - 10}, 1.25, {ease:FlxEase.quartOut});
+		
+	}
+	
 	
 	private function collisionCheck(b:Bullet):Void
 	{

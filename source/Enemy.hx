@@ -13,6 +13,8 @@ class Enemy extends FlxSprite
 {
 
 	private var whiteNess:Float = 0;
+	public var justThought:Bool = false;
+	private var thoughtTimer:Float = 4;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
 	{
@@ -48,6 +50,16 @@ class Enemy extends FlxSprite
 		else if (whiteNess > 0.2)
 		{
 			color = 0xFF101010;
+		}
+		
+		if (justThought)
+		{
+			thoughtTimer -= FlxG.elapsed;
+			if (thoughtTimer <= 0)
+			{
+				justThought = false;
+				thoughtTimer = 4;
+			}
 		}
 		
 	}
