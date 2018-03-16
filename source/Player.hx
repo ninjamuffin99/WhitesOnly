@@ -23,6 +23,8 @@ class Player extends FlxSprite
 	
 	private var accel:Float = 3000;
 	
+	public var justThought:Bool = false;
+	private var thoughtTimer:Float = 4;
 
 	public function new(?X:Float=0, ?Y:Float=0, playerBulletArray:FlxTypedGroup<Bullet>) 
 	{
@@ -41,6 +43,18 @@ class Player extends FlxSprite
 		controls();
 		
 		super.update(elapsed);
+		
+		
+		if (justThought)
+		{
+			thoughtTimer -= FlxG.elapsed;
+			if (thoughtTimer <= 0)
+			{
+				justThought = false;
+				thoughtTimer = 4;
+			}
+		}
+		
 		
 	}
 	

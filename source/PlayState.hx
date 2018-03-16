@@ -100,7 +100,19 @@ class PlayState extends FlxState
 	private function enemyThink():Void
 	{
 		_enemy.justThought = true;
-		var thought:Thoughts = new Thoughts(_enemy.x, _enemy.y - 68, 100, "This is my thought", 16);
+		
+		var thoughtText:String;
+		
+		if (_enemy.color == FlxColor.WHITE)
+		{
+			thoughtText = "Me Too Thanks";
+		}
+		else
+		{
+			thoughtText = "Different Opinion";
+		}
+		
+		var thought:Thoughts = new Thoughts(_enemy.x, _enemy.y - 68, 100, thoughtText, 16);
 		add(thought);
 		
 		FlxTween.tween(thought, {y: thought.y - 10}, 1.25, {ease:FlxEase.quartOut});
