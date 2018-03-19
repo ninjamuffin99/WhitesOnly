@@ -38,14 +38,11 @@ class PlayState extends FlxState
 		_mWalls.setTileProperties(1, FlxObject.ANY);
 		add(_mWalls);
 		
-	
-		
 		_grpPeople = new FlxTypedGroup<FlxSprite>();
 		add(_grpPeople);
 		
 		_grpEnemies = new FlxTypedGroup<Enemy>();
 		add(_grpEnemies);
-		
 		
 		playerBullets = new FlxTypedGroup<Bullet>();
 		add(playerBullets);
@@ -56,8 +53,7 @@ class PlayState extends FlxState
 		_player = new Player(20, 300, playerBullets);
 		_grpPeople.add(_player);
 		
-		_enemy = new Enemy(400, 300);
-		_grpEnemies.add(_enemy);
+		_map.loadEntities(placeEntities, "entities");
 		
 		
 		var barHeight:Float = 50;
@@ -76,6 +72,22 @@ class PlayState extends FlxState
 		_grpEnemies.forEach(initPeople);
 		
 		super.create();
+	}
+	
+	private function placeEntities(entityName:String, entityData:Xml):Void
+	{
+		var x:Int = Std.parseInt(entityData.get("x"));
+		var y:Int = Std.parseInt(entityData.get("y"));
+		if (entityName == "player")
+		{
+			_player.x = x;
+			_player.y = y;
+		}
+		else if (entityName == "enemy")
+		{
+			var enemy:Enemy = new Enemy(x, y);
+			_grpEnemies.add(enemy);
+		}
 	}
 	
 	private function initPeople(p:FlxSprite):Void
@@ -102,19 +114,16 @@ class PlayState extends FlxState
 		
 		_grpEnemies.forEachAlive(followCheck);
 		
-		if (FlxMath.distanceBetween(_player, _enemy) < 94 && !_enemy.justThought)
-		{
-			enemyThink();
-		}
+		
 	}
 	
-	private function enemyThink(?textOverride:String):Void
+	private function enemyThink(e:Enemy, ?textOverride:String):Void
 	{
-		_enemy.justThought = true;
+		e.justThought = true;
 		
 		var thoughtText:String;
 		
-		if (_enemy.color == FlxColor.WHITE)
+		if (e.color == FlxColor.WHITE)
 		{
 			thoughtText = "insert same opinion here";
 		}
@@ -123,7 +132,7 @@ class PlayState extends FlxState
 			thoughtText = "insert different opinion here";
 		}
 		
-		var thought:Thoughts = new Thoughts(_enemy.x, _enemy.y - 68, 150, thoughtText, 16);
+		var thought:Thoughts = new Thoughts(e.x, e.y - 68, 150, thoughtText, 16);
 		add(thought);
 		
 		if (textOverride != null)
@@ -139,32 +148,43 @@ class PlayState extends FlxState
 	{
 		if (e.color == FlxColor.WHITE)
 		{
+			e.acceleration.x = 0;
 			if (FlxMath.distanceBetween(e, _player) >= e.rndDistance)
 			{
+				var accel:Float = e.rndAccel;
 				if (e.x > _player.x)
 				{
-					e.velocity.x = -100;
+					e.acceleration.x = -accel;
 				}
 				else
 				{
-					e.velocity.x = 100;
+					e.acceleration.x = accel;
 				}
 			}
-			
 		}
+		
+		if (FlxMath.distanceBetween(_player, e) < 94 && !e.justThought)
+		{
+			enemyThink(e);
+		}
+		
 	}
 	
 	private function collisionCheck(b:Bullet):Void
 	{
-		if (FlxG.overlap(b, _enemy) && _enemy.color != FlxColor.WHITE)
+		for (e in _grpEnemies.members)
 		{
-			_enemy.hit();
-			_enemy.x += b.velocity.x * FlxG.random.float(0.001, 0.01);
-			var flash:MuzzleFlash = new MuzzleFlash(b.x, b.y);
-			add(flash);
-			
-			b.kill();
+			if (FlxG.overlap(b, e) && e.color != FlxColor.WHITE)
+			{
+				e.hit();
+				e.x += b.velocity.x * FlxG.random.float(0.001, 0.01);
+				var flash:MuzzleFlash = new MuzzleFlash(b.x, b.y);
+				add(flash);
+				
+				b.kill();
+			}
 		}
+		
 	}
 	
 }
