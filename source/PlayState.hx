@@ -27,6 +27,7 @@ class PlayState extends FlxState
 	private var _mWalls:FlxTilemap;
 	
 	private var _grpPeople:FlxTypedGroup<FlxSprite>;
+	private var _grpEnemies:FlxTypedGroup<Enemy>;
 	
 	override public function create():Void
 	{
@@ -37,8 +38,14 @@ class PlayState extends FlxState
 		_mWalls.setTileProperties(1, FlxObject.ANY);
 		add(_mWalls);
 		
+	
+		
 		_grpPeople = new FlxTypedGroup<FlxSprite>();
 		add(_grpPeople);
+		
+		_grpEnemies = new FlxTypedGroup<Enemy>();
+		add(_grpEnemies);
+		
 		
 		playerBullets = new FlxTypedGroup<Bullet>();
 		add(playerBullets);
@@ -50,7 +57,7 @@ class PlayState extends FlxState
 		_grpPeople.add(_player);
 		
 		_enemy = new Enemy(400, 300);
-		_grpPeople.add(_enemy);
+		_grpEnemies.add(_enemy);
 		
 		
 		var barHeight:Float = 50;
@@ -66,6 +73,7 @@ class PlayState extends FlxState
 		FlxG.camera.follow(_player, FlxCameraFollowStyle.SCREEN_BY_SCREEN, 0.25);
 		
 		_grpPeople.forEach(initPeople);
+		_grpEnemies.forEach(initPeople);
 		
 		super.create();
 	}
@@ -90,6 +98,9 @@ class PlayState extends FlxState
 		playerBullets.forEachAlive(collisionCheck);
 		
 		FlxG.collide(_grpPeople, _mWalls);
+		FlxG.collide(_grpEnemies, _mWalls);
+		
+		_grpEnemies.forEachAlive(followCheck);
 		
 		if (FlxMath.distanceBetween(_player, _enemy) < 94 && !_enemy.justThought)
 		{
@@ -97,7 +108,7 @@ class PlayState extends FlxState
 		}
 	}
 	
-	private function enemyThink():Void
+	private function enemyThink(?textOverride:String):Void
 	{
 		_enemy.justThought = true;
 		
@@ -105,20 +116,43 @@ class PlayState extends FlxState
 		
 		if (_enemy.color == FlxColor.WHITE)
 		{
-			thoughtText = "Me Too Thanks";
+			thoughtText = "insert same opinion here";
 		}
 		else
 		{
-			thoughtText = "Different Opinion";
+			thoughtText = "insert different opinion here";
 		}
 		
-		var thought:Thoughts = new Thoughts(_enemy.x, _enemy.y - 68, 100, thoughtText, 16);
+		var thought:Thoughts = new Thoughts(_enemy.x, _enemy.y - 68, 150, thoughtText, 16);
 		add(thought);
+		
+		if (textOverride != null)
+		{
+			thought.text = textOverride;
+		}
 		
 		FlxTween.tween(thought, {y: thought.y - 10}, 1.25, {ease:FlxEase.quartOut});
 		
 	}
 	
+	private function followCheck(e:Enemy):Void
+	{
+		if (e.color == FlxColor.WHITE)
+		{
+			if (FlxMath.distanceBetween(e, _player) >= e.rndDistance)
+			{
+				if (e.x > _player.x)
+				{
+					e.velocity.x = -100;
+				}
+				else
+				{
+					e.velocity.x = 100;
+				}
+			}
+			
+		}
+	}
 	
 	private function collisionCheck(b:Bullet):Void
 	{

@@ -15,12 +15,14 @@ class Enemy extends FlxSprite
 	private var whiteNess:Float = 0;
 	public var justThought:Bool = false;
 	private var thoughtTimer:Float = 4;
+	public var rndDistance:Int = FlxG.random.int(16, 90);
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
 	{
 		super(X, Y, SimpleGraphic);
 		makeGraphic(64, 64);
 		color = FlxColor.BLACK;
+		drag.x = 500;
 	}
 	
 	override public function update(elapsed:Float):Void 
