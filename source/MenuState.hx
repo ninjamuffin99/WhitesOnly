@@ -14,6 +14,10 @@ class MenuState extends FlxState
 	private var inputs:FlxInputText;
 	private var btnEnter:FlxButton;
 	private var thingsLiked:FlxText;
+	private var thingsDisliked:FlxText;
+	
+	private var tempLikesArray:Array<String> = [];
+	private var tempDislikesArray:Array<String> = [];
 	
 	override public function create():Void
 	{
@@ -23,6 +27,10 @@ class MenuState extends FlxState
 		
 		thingsLiked = new FlxText(20, 66, 0, "things you like: ", 16);
 		add(thingsLiked);
+		
+		thingsDisliked = new FlxText(FlxG.width - 300, 66, 0, "things you DO NOT like: ", 16);
+		thingsDisliked.alignment = FlxTextAlign.RIGHT;
+		add(thingsDisliked);
 		
 		inputs = new FlxInputText(0, 170, 200, "", 16);
 		inputs.screenCenter(X);
@@ -50,8 +58,23 @@ class MenuState extends FlxState
 	{
 		if (inputs.text.length > 1)
 		{
-			thingsLiked.text += "\n" + inputs.text;
+			if (tempLikesArray.length <= 5)
+			{
+				thingsLiked.text += "\n" + inputs.text;
+				tempLikesArray.push(inputs.text);
+				
+			}
+			else
+			{
+				thingsDisliked.text += "\n" + inputs.text;
+				tempDislikesArray.push(inputs.text);
+			}
 			inputs.text = "";
+			
+			if (tempDislikesArray.length >= 5)
+			{
+				FlxG.switchState(new PlayState());
+			}
 		}
 	}
 }

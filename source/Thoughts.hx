@@ -30,4 +30,9 @@ class Thoughts extends FlxText
 		
 	}
 	
+	public static var likes:Array<String> = 
+	[
+		
+	];
+	
 }
