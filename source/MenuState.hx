@@ -7,39 +7,27 @@ import flixel.addons.ui.FlxInputText;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
+import flixel.util.FlxColor;
 
 class MenuState extends FlxState
 {
-	private var instructions:FlxText;
-	private var inputs:FlxInputText;
-	private var btnEnter:FlxButton;
-	private var thingsLiked:FlxText;
-	private var thingsDisliked:FlxText;
-	
-	private var tempLikesArray:Array<String> = [];
-	private var tempDislikesArray:Array<String> = [];
+	private var _txtTitle:FlxText;
+	private var _txtTitle2:FlxText;
 	
 	override public function create():Void
 	{
-		instructions = new FlxText(0, 32, 0, "Type in things you like then press enter", 16);
-		instructions.screenCenter(X);
-		add(instructions);
+		FlxG.camera.bgColor = FlxColor.GRAY;
 		
-		thingsLiked = new FlxText(20, 66, 0, "things you like: ", 16);
-		add(thingsLiked);
+		_txtTitle = new FlxText(0, 0, 0, "WHITES", 64);
+		add(_txtTitle);
+		_txtTitle.screenCenter();
 		
-		thingsDisliked = new FlxText(FlxG.width - 300, 66, 0, "things you DO NOT like: ", 16);
-		thingsDisliked.alignment = FlxTextAlign.RIGHT;
-		add(thingsDisliked);
+		_txtTitle2 = new FlxText(0, FlxG.height / 2 + 52, 0, "ONLY", 64);
+		_txtTitle2.color = FlxColor.BLACK;
+		add(_txtTitle2);
+		_txtTitle2.screenCenter(X);
 		
-		inputs = new FlxInputText(0, 170, 200, "", 16);
-		inputs.screenCenter(X);
-		add(inputs);
-		
-		btnEnter = new FlxButton(0, inputs.y + inputs.height + 16, "Enter", addThingsLiked);
-		btnEnter.screenCenter(X);
-		add(btnEnter);
-		
+		_txtTitle2.x += 40;
 		
 		super.create();
 	}
@@ -48,33 +36,15 @@ class MenuState extends FlxState
 	{
 		super.update(elapsed);
 		
-		if (inputs.hasFocus && FlxG.keys.justPressed.ENTER)
+		if (FlxG.keys.justPressed.ANY)
 		{
-			addThingsLiked();
+			FlxG.camera.camera.fade(FlxColor.GRAY, 2, false, finishFade);
 		}
+		
 	}
 	
-	private function addThingsLiked():Void
+	private function finishFade():Void
 	{
-		if (inputs.text.length > 1)
-		{
-			if (tempLikesArray.length <= 5)
-			{
-				thingsLiked.text += "\n" + inputs.text;
-				tempLikesArray.push(inputs.text);
-				
-			}
-			else
-			{
-				thingsDisliked.text += "\n" + inputs.text;
-				tempDislikesArray.push(inputs.text);
-			}
-			inputs.text = "";
-			
-			if (tempDislikesArray.length >= 5)
-			{
-				FlxG.switchState(new PlayState());
-			}
-		}
+		FlxG.switchState(new PlayState());
 	}
 }

@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;
@@ -20,18 +21,22 @@ class Enemy extends FlxSprite
 	public var rndAccel:Float = FlxG.random.float(400, 850);
 	public var rndDrag:Float = FlxG.random.float(900, 1800);
 	
+	public var canJump:Bool = false;
+	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
 	{
 		super(X, Y, SimpleGraphic);
 		makeGraphic(64, 64);
 		color = FlxColor.BLACK;
 		drag.x = rndDrag;
-		maxVelocity.x = FlxG.random.float(280, 300);
+		maxVelocity.x = FlxG.random.float(240, 300);
 	}
 	
 	override public function update(elapsed:Float):Void 
 	{
 		super.update(elapsed);
+		
+		canJump = isTouching(FlxObject.FLOOR);
 		
 		if (whiteNess > 1)
 		{

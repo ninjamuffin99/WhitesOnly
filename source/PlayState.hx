@@ -7,6 +7,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxRect;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
@@ -29,9 +30,13 @@ class PlayState extends FlxState
 	private var _grpPeople:FlxTypedGroup<FlxSprite>;
 	private var _grpEnemies:FlxTypedGroup<Enemy>;
 	
+	private var wasdTxt:FlxText;
+	private var _txtShoot:FlxText;
+	
 	override public function create():Void
 	{
 		FlxG.camera.bgColor = FlxColor.GRAY;
+		FlxG.camera.fade(FlxColor.GRAY, 2, true);
 		
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 32, 32, "Floors");
@@ -55,18 +60,28 @@ class PlayState extends FlxState
 		
 		_map.loadEntities(placeEntities, "entities");
 		
+		FlxG.worldBounds.setSize(10000, 10000);
+		
+		wasdTxt= new FlxText(_player.x - 64, _player.y - 100, 0, "A & D == Move", 16);
+		add(wasdTxt);
+		
+		_txtShoot = new FlxText(_player.x + 100, _player.y - 100, 0, "Spacebar to shoot", 16);
+		add(_txtShoot);
+		_txtShoot.visible = false;
+		
 		
 		var barHeight:Float = 50;
 		
 		var cinemaBar:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, Std.int(barHeight), FlxColor.BLACK);
-		add(cinemaBar);
+		//add(cinemaBar);
 		var cinemaBar2:FlxSprite = new FlxSprite(0, FlxG.height - barHeight).makeGraphic(FlxG.width, Std.int(barHeight), FlxColor.BLACK);
-		add(cinemaBar2);
+		//add(cinemaBar2);
 		
 		cinemaBar.scrollFactor.x = cinemaBar.scrollFactor.y = 0;
 		cinemaBar2.scrollFactor.x = cinemaBar2.scrollFactor.y = 0;
 		
 		FlxG.camera.follow(_player, FlxCameraFollowStyle.SCREEN_BY_SCREEN, 0.25);
+		FlxG.camera.deadzone = FlxRect.get(0, cinemaBar.height, FlxG.width, cinemaBar2.y);
 		
 		_grpPeople.forEach(initPeople);
 		_grpEnemies.forEach(initPeople);
@@ -98,6 +113,12 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		
+		if (_player.x >= _txtShoot.x)
+		{
+			_txtShoot.visible = true;
+			wasdTxt.visible = false;
+		}
 		
 		if (_player.justShot)
 		{
@@ -132,7 +153,7 @@ class PlayState extends FlxState
 			thoughtText = "insert different opinion here";
 		}
 		
-		var thought:Thoughts = new Thoughts(e.x, e.y - 68, 150, thoughtText, 16);
+		var thought:Thoughts = new Thoughts(e.x + FlxG.random.float(-32, 32), e.y - 68, 150, thoughtText, 16);
 		add(thought);
 		
 		if (textOverride != null)
@@ -140,12 +161,17 @@ class PlayState extends FlxState
 			thought.text = textOverride;
 		}
 		
-		FlxTween.tween(thought, {y: thought.y - 10}, 1.25, {ease:FlxEase.quartOut});
+		FlxTween.tween(thought, {y: thought.y - FlxG.random.float(8, 15)}, 1.25, {ease:FlxEase.quartOut});
 		
 	}
 	
 	private function followCheck(e:Enemy):Void
 	{
+		if (e.y > _player.y && e.velocity.y == 0 && e.color == FlxColor.WHITE)
+		{
+			e.velocity.y -= 300;
+		}
+		
 		if (e.color == FlxColor.WHITE)
 		{
 			e.acceleration.x = 0;
@@ -178,13 +204,23 @@ class PlayState extends FlxState
 			{
 				e.hit();
 				e.x += b.velocity.x * FlxG.random.float(0.001, 0.01);
-				var flash:MuzzleFlash = new MuzzleFlash(b.x, b.y);
-				add(flash);
-				
-				b.kill();
+				muzzFlash(b);
 			}
 		}
 		
+		if (FlxG.collide(b, _mWalls))
+		{
+			muzzFlash(b);
+		}
+		
+	}
+	
+	private function muzzFlash(b:Bullet):Void
+	{
+		var flash:MuzzleFlash = new MuzzleFlash(b.x, b.y);
+		add(flash);
+		
+		b.kill();
 	}
 	
 }
