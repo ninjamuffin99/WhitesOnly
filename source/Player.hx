@@ -106,6 +106,13 @@ class Player extends FlxSprite
 			}
 		}
 		
+		shooting();
+		
+		
+	}
+	
+	private function shooting():Void
+	{
 		
 		justShot = false;
 		if (FlxG.keys.pressed.SPACE)
@@ -118,14 +125,12 @@ class Player extends FlxSprite
 				justShot = true;
 			}
 		}
-		
 	}
 	
 	
 	
 	private function attack():Void
 	{
-		
 		switch (facing) 
 		{
 			case FlxObject.RIGHT:

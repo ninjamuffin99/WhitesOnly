@@ -62,10 +62,10 @@ class PlayState extends FlxState
 		
 		FlxG.worldBounds.setSize(10000, 10000);
 		
-		wasdTxt= new FlxText(_player.x - 64, _player.y - 100, 0, "A & D == Move", 16);
+		wasdTxt = new FlxText(_player.x - 64, _player.y - 100, 0, "A & D == Move", 16);
 		add(wasdTxt);
 		
-		_txtShoot = new FlxText(_player.x + 100, _player.y - 100, 0, "Spacebar to shoot", 16);
+		_txtShoot = new FlxText(170, 720, 0, "Spacebar to shoot", 16);
 		add(_txtShoot);
 		_txtShoot.visible = false;
 		
@@ -100,7 +100,7 @@ class PlayState extends FlxState
 		}
 		else if (entityName == "enemy")
 		{
-			var enemy:Enemy = new Enemy(x, y);
+			var enemy:Enemy = new Enemy(x, y, playerBullets);
 			_grpEnemies.add(enemy);
 		}
 	}
@@ -113,13 +113,13 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		
+		/*
 		if (_player.x >= _txtShoot.x)
 		{
 			_txtShoot.visible = true;
 			wasdTxt.visible = false;
 		}
-		
+		*/
 		if (_player.justShot)
 		{
 			var flash:MuzzleFlash = new MuzzleFlash(_player.xPos, _player.y + 26);
