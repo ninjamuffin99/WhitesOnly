@@ -38,6 +38,7 @@ class PlayState extends FlxState
 		FlxG.camera.bgColor = FlxColor.GRAY;
 		FlxG.camera.fade(FlxColor.GRAY, 2, true);
 		
+		
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 32, 32, "Floors");
 		_mWalls.setTileProperties(1, FlxObject.ANY);
@@ -81,6 +82,7 @@ class PlayState extends FlxState
 		cinemaBar2.scrollFactor.x = cinemaBar2.scrollFactor.y = 0;
 		
 		FlxG.camera.follow(_player, FlxCameraFollowStyle.SCREEN_BY_SCREEN, 0.25);
+		FlxG.camera.snapToTarget();
 		FlxG.camera.deadzone = FlxRect.get(0, cinemaBar.height, FlxG.width, cinemaBar2.y);
 		
 		_grpPeople.forEach(initPeople);
@@ -102,6 +104,12 @@ class PlayState extends FlxState
 		{
 			var enemy:Enemy = new Enemy(x, y, playerBullets);
 			_grpEnemies.add(enemy);
+		}
+		else if (entityName == "text")
+		{
+			var textSpr:FlxText = new FlxText(x, y, 0, Std.string(entityData.get("displayText")), 32);
+			textSpr.color = FlxColor.WHITE;
+			add(textSpr);
 		}
 	}
 	
@@ -153,7 +161,7 @@ class PlayState extends FlxState
 			thoughtText = "insert different opinion here";
 		}
 		
-		var thought:Thoughts = new Thoughts(e.x + FlxG.random.float(-32, 32), e.y - 68, 150, thoughtText, 16);
+		var thought:Thoughts = new Thoughts(e.x + FlxG.random.float(-100, 100), e.y - FlxG.random.float(10, 100), 150, thoughtText, 16);
 		add(thought);
 		
 		if (textOverride != null)
@@ -167,24 +175,28 @@ class PlayState extends FlxState
 	
 	private function followCheck(e:Enemy):Void
 	{
-		if (e.y > _player.y && e.velocity.y == 0 && e.color == FlxColor.WHITE)
+		e.acceleration.x = 0;
+		if (!e.finalSection)
 		{
-			e.velocity.y -= 300;
-		}
-		
-		if (e.color == FlxColor.WHITE)
-		{
-			e.acceleration.x = 0;
-			if (FlxMath.distanceBetween(e, _player) >= e.rndDistance)
+			if (e.y > _player.y && e.velocity.y == 0 && e.color == FlxColor.WHITE)
 			{
-				var accel:Float = e.rndAccel;
-				if (e.x > _player.x)
+				e.velocity.y -= 300;
+			}
+			
+			if (e.color == FlxColor.WHITE)
+			{
+				
+				if (FlxMath.distanceBetween(e, _player) >= e.rndDistance)
 				{
-					e.acceleration.x = -accel;
-				}
-				else
-				{
-					e.acceleration.x = accel;
+					var accel:Float = e.rndAccel;
+					if (e.x > _player.x)
+					{
+						e.acceleration.x = -accel;
+					}
+					else
+					{
+						e.acceleration.x = accel;
+					}
 				}
 			}
 		}

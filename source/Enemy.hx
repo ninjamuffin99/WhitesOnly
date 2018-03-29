@@ -32,6 +32,18 @@ class Enemy extends FlxSprite
 	
 	public var canJump:Bool = false;
 	
+	public var finalSection:Bool = false;
+	
+	private var colorArray:Array<Int> = 
+	[
+		0xFFFF67B0,
+		0xFFFF7D67,
+		0xFFFFF067,
+		0xFFC6FF67,
+		0xFF67EAFF,
+		0xFF679AFF
+	];
+	
 	public function new(?X:Float=0, ?Y:Float=0, enemyBulletArray:FlxTypedGroup<Bullet>)
 	{
 		super(X, Y);
@@ -47,6 +59,19 @@ class Enemy extends FlxSprite
 	{
 		super.update(elapsed);
 		
+		if (y >= 1800 && !finalSection)
+		{
+			finalSection = true;
+			
+			makeGraphic(FlxG.random.int(30, 130), FlxG.random.int(30, 130), colorArray[FlxG.random.int(0, 5)]);
+			updateHitbox();
+			
+			color = FlxColor.WHITE;
+			
+			drag.x *= 0.1;
+		}
+		
+		
 		canJump = isTouching(FlxObject.FLOOR);
 		
 		if (velocity.x > 0)
@@ -58,29 +83,11 @@ class Enemy extends FlxSprite
 			facing = FlxObject.LEFT;
 		}
 		
-		if (whiteNess > 1)
+		whiteCheck();
+		
+		if (finalSection)
 		{
-			color = FlxColor.WHITE;
-		}
-		else if (whiteNess > 0.9)
-		{
-			color = 0xFFBBBBBB;
-		}
-		else if (whiteNess > 0.8)
-		{
-			color = 0xFF999999;
-		}
-		else if (whiteNess > 0.6)
-		{
-			color = 0xFF777777;
-		}
-		else if (whiteNess > 0.4)
-		{
-			color = 0xFF333333;
-		}
-		else if (whiteNess > 0.2)
-		{
-			color = 0xFF101010;
+			movement();
 		}
 		
 		if (justThought)
@@ -98,6 +105,31 @@ class Enemy extends FlxSprite
 			shooting();
 		}
 		
+	}
+	
+	private var idleTmr:Float = 3;
+	
+	private function movement():Void
+	{
+		if (idleTmr <= 0)
+		{
+			if (FlxG.random.bool(1))
+			{
+				velocity.x = velocity.y = 0;
+			}
+			else
+			{
+				velocity.x = FlxG.random.float( -rndAccel, rndAccel);
+				
+			}
+			
+			idleTmr = FlxG.random.float(1, 4);
+			
+		}
+		else
+		{
+			idleTmr -= FlxG.elapsed;
+		}
 	}
 	
 	private function shooting():Void
@@ -141,4 +173,32 @@ class Enemy extends FlxSprite
 		whiteNess += FlxG.random.float(0, 0.2);
 	}
 
+	private function whiteCheck():Void
+	{
+		if (whiteNess > 1)
+		{
+			color = FlxColor.WHITE;
+		}
+		else if (whiteNess > 0.9)
+		{
+			color = 0xFFBBBBBB;
+		}
+		else if (whiteNess > 0.8)
+		{
+			color = 0xFF999999;
+		}
+		else if (whiteNess > 0.6)
+		{
+			color = 0xFF777777;
+		}
+		else if (whiteNess > 0.4)
+		{
+			color = 0xFF333333;
+		}
+		else if (whiteNess > 0.2)
+		{
+			color = 0xFF101010;
+		}	
+	}
+	
 }

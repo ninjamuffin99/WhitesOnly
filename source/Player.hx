@@ -12,7 +12,6 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
  */
 class Player extends FlxSprite 
 {
-	
 	private var bulletArray:FlxTypedGroup<Bullet>;
 	public var justShot:Bool = false;
 	private var rateOfFire:Int = 6;
@@ -39,7 +38,6 @@ class Player extends FlxSprite
 	
 	override public function update(elapsed:Float):Void 
 	{
-		
 		controls();
 		
 		super.update(elapsed);
@@ -54,8 +52,6 @@ class Player extends FlxSprite
 				thoughtTimer = 4;
 			}
 		}
-		
-		
 	}
 	
 	private function controls():Void
@@ -106,9 +102,7 @@ class Player extends FlxSprite
 			}
 		}
 		
-		shooting();
-		
-		
+		shooting();	
 	}
 	
 	private function shooting():Void
