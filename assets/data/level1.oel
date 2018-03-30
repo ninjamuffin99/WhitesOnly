@@ -110,5 +110,11 @@
     <text id="34" x="2528" y="2144" displayText="The End" size="16" />
     <text id="28" x="2528" y="240" displayText="A game by" size="32" />
     <text id="35" x="2528" y="288" displayText="@ninja_muffin99" size="32" />
+    <text id="36" x="2528" y="1536" displayText="But if we're" size="32" />
+    <text id="37" x="1472" y="1568" displayText="Then what's the point " size="32" />
+    <text id="38" x="1472" y="1616" displayText="of individuality?" size="32" />
+    <text id="39" x="128" y="1680" displayText="Jump down" size="32" />
+    <text id="40" x="128" y="1744" displayText="to kill all the whites" size="32" />
+    <text id="41" x="2528" y="1584" displayText="all the same" size="32" />
   </entities>
 </level>

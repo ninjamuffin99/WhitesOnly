@@ -38,8 +38,8 @@ class PlayState extends FlxState
 	{
 		FlxG.mouse.visible = false;
 		FlxG.camera.bgColor = FlxColor.GRAY;
-		FlxG.camera.fade(FlxColor.BLACK, 7, true);
-		
+		FlxG.camera.fade(FlxColor.BLACK, 5, true);
+		FlxG.sound.playMusic("assets/music/ambience.mp3", 0.5);
 		
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 32, 32, "Floors");
@@ -92,6 +92,13 @@ class PlayState extends FlxState
 		
 		_grpPeople.forEach(initPeople);
 		_grpEnemies.forEach(initPeople);
+		
+		var vig:FlxSprite = new FlxSprite().loadGraphic("assets/images/vignetteresized.png", false, 640, 480);
+		vig.scrollFactor.x = vig.scrollFactor.y = 0;
+		vig.setGraphicSize(FlxG.width, FlxG.height);
+		vig.updateHitbox();
+		vig.alpha = 0.4;
+		add(vig);
 		
 		super.create();
 	}
@@ -152,6 +159,8 @@ class PlayState extends FlxState
 		{
 			finalLevel = true;
 			FlxG.camera.fade(FlxColor.WHITE, 0.05, false, finalFade);
+			FlxG.sound.play("assets/sounds/colorSwap.wav", 0.8);
+			FlxG.sound.music.stop();
 		}
 	}
 	
@@ -160,6 +169,8 @@ class PlayState extends FlxState
 	private function enemyThink(e:Enemy, ?textOverride:String):Void
 	{
 		e.justThought = true;
+		
+		FlxG.sound.play("assets/sounds/pop" + FlxG.random.int(1, 3) + ".mp3", FlxG.random.float(0.5, 0.7));
 		
 		var thoughtText:String;
 		
@@ -203,7 +214,7 @@ class PlayState extends FlxState
 		{
 			if (e.y > _player.y && e.velocity.y == 0 && e.color == FlxColor.WHITE)
 			{
-				e.velocity.y -= 300;
+				e.velocity.y -= 360;
 			}
 			
 			if (e.color == FlxColor.WHITE)
@@ -263,6 +274,9 @@ class PlayState extends FlxState
 		FlxG.camera.fade(FlxColor.WHITE, 3, true);
 		FlxG.camera.bgColor = FlxColor.WHITE;
 		_player.color = Enemy.colorArray[FlxG.random.int(0, Enemy.colorArray.length)];
+		FlxG.sound.playMusic("assets/music/SomewhatOKIDKLMAO_V2.mp3", 0.7);
+		FlxG.sound.music.fadeIn(15, 0, 0.7);
+		
 		
 		_grpText.forEach(changeColor);
 	}
@@ -275,9 +289,37 @@ class PlayState extends FlxState
 	private var thoughtArray:Array<String> = 
 	[
 		"I like anime a lot",
-		"You know most pop music isn't that bad",
+		"You know some pop music isn't that bad",
 		"Crunchy peanut butter is alright",
-		
+		"Dogs are pretty alright",
+		"Children are cool as hell",
+		"Cats are cool",
+		"Water is really better than soda",
+		"La La Land was a good movie",
+		"Carly Rae Jepsen music is my favourite",
+		"I'm a bit obnoxious online because I'm kinda shy in person",
+		"I envy others success",
+		"I often feel under appreciated",
+		"I don't like watching sports",
+		"I love Newgrounds a LOT",
+		"I feel guilty for not appreciating my heritage",
+		"Videogames are the best",
+		"I haven't watched anime for a while",
+		"I miss my old home sometimes, even though it sucked",
+		"The internet isn't as bad as many claim it is",
+		"insert something political here",
+		"My family is super cool",
+		"Shoutouts to Simpleflips",
+		"What kind of music do you like?",
+		"Wait, this game wasn't about racism?",
+		"I spend too much time on Twitter",
+		"Hip hop, man that stuff's my jam!",
+		"Hifumi from New Game is best waifu",
+		"I don't really like berries",
+		"High school was kinda alright",
+		"Teens are alright",
+		"Dogs are meh",
+		"Buzzfeed is alright nowadays"
 	];
 	
 }

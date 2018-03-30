@@ -5,6 +5,8 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 /**
@@ -25,6 +27,8 @@ class Player extends FlxSprite
 	
 	public var justThought:Bool = false;
 	private var thoughtTimer:Float = 4;
+	private var walkTmr:Float = 0.2;
+	private var prevStep:Int = 1;
 
 	public function new(?X:Float=0, ?Y:Float=0, playerBulletArray:FlxTypedGroup<Bullet>) 
 	{
@@ -82,13 +86,22 @@ class Player extends FlxSprite
 		
 		if (_upP && canJump)
 		{
-			velocity.y -= 300;
+			FlxTween.tween(scale, {x: 0.8, y: 1.2}, 0.3, {ease:FlxEase.quadOut}).then(FlxTween.tween(scale, {x: 1, y: 1}, 0.5, {ease:FlxEase.quadInOut}));
+			velocity.y -= 360;
 		}
 		
 		acceleration.x = 0;
 		
 		if (_left || _right)
 		{
+			walkTmr -= FlxG.elapsed;
+			
+			if (walkTmr <= 0 && isTouching(FlxObject.FLOOR) && velocity.x != 0)
+			{
+				walkTmr = FlxG.random.float(0.3, 0.36);
+				prevStep = FlxG.random.int(1, 4, [prevStep]);
+				FlxG.sound.play("assets/sounds/walk" + Std.string(prevStep) + ".mp3");
+			}
 			
 			if (_left)
 			{
@@ -120,6 +133,7 @@ class Player extends FlxSprite
 			fireCoutner += 1;
 			if (fireCoutner >= rateOfFire)
 			{
+				FlxG.sound.play("assets/sounds/bullet" + FlxG.random.int(1, 3) + ".mp3", FlxG.random.float(0.35, 0.55));
 				fireCoutner = 0;
 				attack();
 				justShot = true;

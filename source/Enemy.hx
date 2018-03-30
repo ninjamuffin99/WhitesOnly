@@ -141,6 +141,11 @@ class Enemy extends FlxSprite
 			fireCoutner += 1;
 			if (fireCoutner >= rateOfFire)
 			{
+				if (FlxG.random.bool(3))
+				{
+					FlxG.sound.play("assets/sounds/bullet" + FlxG.random.int(1, 3) + ".mp3", 0.5);
+				}
+				
 				fireCoutner = 0;
 				attack();
 				justShot = true;
