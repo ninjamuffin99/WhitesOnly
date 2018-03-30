@@ -34,7 +34,7 @@ class Enemy extends FlxSprite
 	
 	public var finalSection:Bool = false;
 	
-	private var colorArray:Array<Int> = 
+	public static var colorArray:Array<Int> = 
 	[
 		0xFFFF67B0,
 		0xFFFF7D67,
@@ -100,7 +100,7 @@ class Enemy extends FlxSprite
 			}
 		}
 		
-		if (color == FlxColor.WHITE)
+		if (color == FlxColor.WHITE && !finalSection)
 		{
 			shooting();
 		}

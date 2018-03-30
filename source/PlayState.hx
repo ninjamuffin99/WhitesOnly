@@ -29,14 +29,16 @@ class PlayState extends FlxState
 	
 	private var _grpPeople:FlxTypedGroup<FlxSprite>;
 	private var _grpEnemies:FlxTypedGroup<Enemy>;
+	private var _grpText:FlxTypedGroup<FlxText>;
 	
 	private var wasdTxt:FlxText;
 	private var _txtShoot:FlxText;
 	
 	override public function create():Void
 	{
+		FlxG.mouse.visible = false;
 		FlxG.camera.bgColor = FlxColor.GRAY;
-		FlxG.camera.fade(FlxColor.GRAY, 2, true);
+		FlxG.camera.fade(FlxColor.BLACK, 7, true);
 		
 		
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
@@ -49,6 +51,9 @@ class PlayState extends FlxState
 		
 		_grpEnemies = new FlxTypedGroup<Enemy>();
 		add(_grpEnemies);
+		
+		_grpText = new FlxTypedGroup<FlxText>();
+		add(_grpText);
 		
 		playerBullets = new FlxTypedGroup<Bullet>();
 		add(playerBullets);
@@ -109,7 +114,7 @@ class PlayState extends FlxState
 		{
 			var textSpr:FlxText = new FlxText(x, y, 0, Std.string(entityData.get("displayText")), 32);
 			textSpr.color = FlxColor.WHITE;
-			add(textSpr);
+			_grpText.add(textSpr);
 		}
 	}
 	
@@ -143,8 +148,14 @@ class PlayState extends FlxState
 		
 		_grpEnemies.forEachAlive(followCheck);
 		
-		
+		if (_player.y >= 1800 && !finalLevel)
+		{
+			finalLevel = true;
+			FlxG.camera.fade(FlxColor.WHITE, 0.05, false, finalFade);
+		}
 	}
+	
+	private var finalLevel:Bool = false;
 	
 	private function enemyThink(e:Enemy, ?textOverride:String):Void
 	{
@@ -152,17 +163,29 @@ class PlayState extends FlxState
 		
 		var thoughtText:String;
 		
-		if (e.color == FlxColor.WHITE)
+		if (e.finalSection)
 		{
-			thoughtText = "insert same opinion here";
+			thoughtText = thoughtArray[FlxG.random.int(0, thoughtArray.length)];
 		}
 		else
 		{
-			thoughtText = "insert different opinion here";
+			if (e.color == FlxColor.WHITE)
+			{
+				thoughtText = "insert same opinion here";
+			}
+			else
+			{
+				thoughtText = "insert different opinion here";
+			}
 		}
 		
 		var thought:Thoughts = new Thoughts(e.x + FlxG.random.float(-100, 100), e.y - FlxG.random.float(10, 100), 150, thoughtText, 16);
 		add(thought);
+		
+		if (e.finalSection)
+		{
+			thought.color = FlxColor.BLACK;
+		}
 		
 		if (textOverride != null)
 		{
@@ -234,5 +257,27 @@ class PlayState extends FlxState
 		
 		b.kill();
 	}
+	
+	private function finalFade():Void
+	{
+		FlxG.camera.fade(FlxColor.WHITE, 3, true);
+		FlxG.camera.bgColor = FlxColor.WHITE;
+		_player.color = Enemy.colorArray[FlxG.random.int(0, Enemy.colorArray.length)];
+		
+		_grpText.forEach(changeColor);
+	}
+	
+	private function changeColor(t:FlxText):Void
+	{
+		t.color = FlxColor.BLACK;
+	}
+	
+	private var thoughtArray:Array<String> = 
+	[
+		"I like anime a lot",
+		"You know most pop music isn't that bad",
+		"Crunchy peanut butter is alright",
+		
+	];
 	
 }

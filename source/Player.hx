@@ -5,6 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.util.FlxColor;
 
 /**
  * ...
@@ -34,6 +35,7 @@ class Player extends FlxSprite
 		drag.x = 1400;
 		
 		bulletArray = playerBulletArray;
+		color = FlxColor.WHITE;
 	}
 	
 	override public function update(elapsed:Float):Void 
@@ -102,7 +104,11 @@ class Player extends FlxSprite
 			}
 		}
 		
-		shooting();	
+		
+		if (color == FlxColor.WHITE)
+		{
+			shooting();	
+		}
 	}
 	
 	private function shooting():Void
