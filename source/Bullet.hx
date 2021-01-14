@@ -5,6 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.util.FlxColor;
 
 /**
  * ...
@@ -21,13 +22,13 @@ class Bullet extends FlxSprite
 	{
 		super(X, Y);
 		
-		makeGraphic(32, 20);
+		makeGraphic(32, 20, FlxColor.BLACK);
 		
 		speed = Speed;
 		dir = Direction;
 		damage = Damage;
 		
-		velocity.y = FlxG.random.float( -25, 25);
+		velocity.y = FlxG.random.float(-25, 25);
 	}
 	
 	override public function update(elapsed:Float):Void 

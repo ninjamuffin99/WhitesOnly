@@ -39,7 +39,7 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		FlxG.camera.bgColor = FlxColor.GRAY;
 		FlxG.camera.fade(FlxColor.BLACK, 5, true);
-		FlxG.sound.playMusic("assets/music/ambience.mp3", 0.5);
+		FlxG.sound.playMusic("assets/music/ambience.ogg", 0.5);
 		
 		_map = new FlxOgmoLoader(AssetPaths.level1__oel);
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 32, 32, "Floors");
@@ -69,6 +69,7 @@ class PlayState extends FlxState
 		FlxG.worldBounds.setSize(10000, 10000);
 		
 		wasdTxt = new FlxText(_player.x - 64, _player.y - 100, 0, "A & D == Move", 16);
+		wasdTxt.color = FlxColor.BLACK;
 		add(wasdTxt);
 		
 		_txtShoot = new FlxText(170, 720, 0, "Spacebar to shoot", 16);
@@ -99,6 +100,8 @@ class PlayState extends FlxState
 		vig.updateHitbox();
 		vig.alpha = 0.4;
 		add(vig);
+		
+		_grpText.forEach(changeColorintro);
 		
 		super.create();
 	}
@@ -159,8 +162,9 @@ class PlayState extends FlxState
 		{
 			finalLevel = true;
 			FlxG.camera.fade(FlxColor.WHITE, 0.05, false, finalFade);
-			FlxG.sound.play("assets/sounds/colorSwap.wav", 0.8);
+			FlxG.sound.play("assets/sounds/colorSwap.ogg", 0.8);
 			FlxG.sound.music.stop();
+			_player.color = FlxG.random.getObject(Enemy.colorArray);
 		}
 	}
 	
@@ -170,7 +174,7 @@ class PlayState extends FlxState
 	{
 		e.justThought = true;
 		
-		FlxG.sound.play("assets/sounds/pop" + FlxG.random.int(1, 3) + ".mp3", FlxG.random.float(0.5, 0.7));
+		FlxG.sound.play("assets/sounds/pop" + FlxG.random.int(1, 3) + ".ogg", FlxG.random.float(0.5, 0.7));
 		
 		var thoughtText:String;
 		
@@ -180,7 +184,7 @@ class PlayState extends FlxState
 		}
 		else
 		{
-			if (e.color == FlxColor.WHITE)
+			if (e.color == FlxColor.BLACK)
 			{
 				thoughtText = "insert same opinion here";
 			}
@@ -194,6 +198,10 @@ class PlayState extends FlxState
 		add(thought);
 		
 		if (e.finalSection)
+		{
+			thought.color = FlxColor.WHITE;
+		}
+		else
 		{
 			thought.color = FlxColor.BLACK;
 		}
@@ -212,12 +220,12 @@ class PlayState extends FlxState
 		e.acceleration.x = 0;
 		if (!e.finalSection)
 		{
-			if (e.y > _player.y && e.velocity.y == 0 && e.color == FlxColor.WHITE)
+			if (e.y > _player.y && e.velocity.y == 0 && e.color == FlxColor.BLACK)
 			{
 				e.velocity.y -= 360;
 			}
 			
-			if (e.color == FlxColor.WHITE)
+			if (e.color == FlxColor.BLACK)
 			{
 				
 				if (FlxMath.distanceBetween(e, _player) >= e.rndDistance)
@@ -246,7 +254,7 @@ class PlayState extends FlxState
 	{
 		for (e in _grpEnemies.members)
 		{
-			if (FlxG.overlap(b, e) && e.color != FlxColor.WHITE)
+			if (FlxG.overlap(b, e) && e.color != FlxColor.BLACK)
 			{
 				e.hit();
 				e.x += b.velocity.x * FlxG.random.float(0.001, 0.01);
@@ -272,9 +280,8 @@ class PlayState extends FlxState
 	private function finalFade():Void
 	{
 		FlxG.camera.fade(FlxColor.WHITE, 3, true);
-		FlxG.camera.bgColor = FlxColor.WHITE;
-		_player.color = Enemy.colorArray[FlxG.random.int(0, Enemy.colorArray.length)];
-		FlxG.sound.playMusic("assets/music/SomewhatOKIDKLMAO_V2.mp3", 0.7);
+		FlxG.camera.bgColor = FlxColor.BLACK;
+		FlxG.sound.playMusic("assets/music/SomewhatOKIDKLMAO_V2.ogg", 0.7);
 		FlxG.sound.music.fadeIn(15, 0, 0.7);
 		
 		
@@ -283,8 +290,15 @@ class PlayState extends FlxState
 	
 	private function changeColor(t:FlxText):Void
 	{
+		t.color = FlxColor.WHITE;
+	}
+	
+	
+	private function changeColorintro(t:FlxText):Void
+	{
 		t.color = FlxColor.BLACK;
 	}
+	
 	
 	private var thoughtArray:Array<String> = 
 	[

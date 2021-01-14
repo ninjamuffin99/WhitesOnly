@@ -39,7 +39,7 @@ class Player extends FlxSprite
 		drag.x = 1400;
 		
 		bulletArray = playerBulletArray;
-		color = FlxColor.WHITE;
+		color = FlxColor.BLACK;
 	}
 	
 	override public function update(elapsed:Float):Void 
@@ -100,7 +100,7 @@ class Player extends FlxSprite
 			{
 				walkTmr = FlxG.random.float(0.3, 0.36);
 				prevStep = FlxG.random.int(1, 4, [prevStep]);
-				FlxG.sound.play("assets/sounds/walk" + Std.string(prevStep) + ".mp3");
+				FlxG.sound.play("assets/sounds/walk" + Std.string(prevStep) + ".ogg");
 			}
 			
 			if (_left)
@@ -118,7 +118,7 @@ class Player extends FlxSprite
 		}
 		
 		
-		if (color == FlxColor.WHITE)
+		if (color == FlxColor.BLACK)
 		{
 			shooting();	
 		}
@@ -133,7 +133,7 @@ class Player extends FlxSprite
 			fireCoutner += 1;
 			if (fireCoutner >= rateOfFire)
 			{
-				FlxG.sound.play("assets/sounds/bullet" + FlxG.random.int(1, 3) + ".mp3", FlxG.random.float(0.35, 0.55));
+				FlxG.sound.play("assets/sounds/bullet" + FlxG.random.int(1, 3) + ".ogg", FlxG.random.float(0.35, 0.55));
 				fireCoutner = 0;
 				attack();
 				justShot = true;

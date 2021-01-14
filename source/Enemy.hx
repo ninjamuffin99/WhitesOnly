@@ -48,7 +48,7 @@ class Enemy extends FlxSprite
 	{
 		super(X, Y);
 		makeGraphic(64, 64);
-		color = FlxColor.BLACK;
+		color = FlxColor.WHITE;
 		drag.x = rndDrag;
 		maxVelocity.x = FlxG.random.float(240, 300);
 		
@@ -63,10 +63,10 @@ class Enemy extends FlxSprite
 		{
 			finalSection = true;
 			
-			makeGraphic(FlxG.random.int(30, 130), FlxG.random.int(30, 130), colorArray[FlxG.random.int(0, 5)]);
+			makeGraphic(FlxG.random.int(30, 130), FlxG.random.int(30, 130));
 			updateHitbox();
 			
-			color = FlxColor.WHITE;
+			color = FlxG.random.getObject(colorArray);
 			
 			drag.x *= 0.1;
 		}
@@ -83,7 +83,11 @@ class Enemy extends FlxSprite
 			facing = FlxObject.LEFT;
 		}
 		
-		whiteCheck();
+		if (!finalSection)
+		{
+			whiteCheck();
+		}
+		
 		
 		if (finalSection)
 		{
@@ -100,7 +104,7 @@ class Enemy extends FlxSprite
 			}
 		}
 		
-		if (color == FlxColor.WHITE && !finalSection)
+		if (color == FlxColor.BLACK && !finalSection)
 		{
 			shooting();
 		}
@@ -143,7 +147,7 @@ class Enemy extends FlxSprite
 			{
 				if (FlxG.random.bool(3))
 				{
-					FlxG.sound.play("assets/sounds/bullet" + FlxG.random.int(1, 3) + ".mp3", 0.5);
+					FlxG.sound.play("assets/sounds/bullet" + FlxG.random.int(1, 3) + ".ogg", 0.5);
 				}
 				
 				fireCoutner = 0;
@@ -182,15 +186,15 @@ class Enemy extends FlxSprite
 	{
 		if (whiteNess > 1)
 		{
-			color = FlxColor.WHITE;
+			color = FlxColor.BLACK;
 		}
 		else if (whiteNess > 0.9)
 		{
-			color = 0xFFBBBBBB;
+			color = 0xFF101010;
 		}
 		else if (whiteNess > 0.8)
 		{
-			color = 0xFF999999;
+			color = 0xFF333333;
 		}
 		else if (whiteNess > 0.6)
 		{
@@ -198,11 +202,11 @@ class Enemy extends FlxSprite
 		}
 		else if (whiteNess > 0.4)
 		{
-			color = 0xFF333333;
+			color = 0xFF999999;
 		}
 		else if (whiteNess > 0.2)
 		{
-			color = 0xFF101010;
+			color = 0xFFBBBBBB;
 		}	
 	}
 	
